@@ -1,0 +1,19 @@
+<div>
+  <div class="wfw5gfw mb-3">
+    <button class="learn-more btn" (click)="sortTable()">Sort</button>
+  </div>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col" class="br-silver">Word</th>
+      <th scope="col">Meanings</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of wordObj | keyvalue: sortOrder">
+      <td class="br-silver">{{item.key}}</td>
+      <td>{{item.value}}</td>
+    </tr>
+  </tbody>
+</table>
