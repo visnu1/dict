@@ -8,7 +8,7 @@ import * as csv from 'csvtojson'
 })
 export class AppComponent {
   title = 'dict';
-  order: 'keyDescOrder' | 'valueAscOrder' | 'originalOrder' = 'originalOrder';
+  order: 'keyDescOrder' | 'valueAscOrder' | 'originalOrder' | 'keyAscOrder' = 'originalOrder';
   words = [
     "Abandon",
     "Abrasive",
@@ -1849,19 +1849,24 @@ export class AppComponent {
     return a.value.localeCompare(b.value);
   }
 
+  keyAscOrder = (a: any, b: any): number => {
+    return a.key < b.key ? -1 : (b.key > a.key ? 1 : 0);
+  }
+
   // Order by descending property key
   keyDescOrder = (a: any, b: any): number => {
     return a.key > b.key ? -1 : (b.key > a.key ? 1 : 0);
   }
 
   get sortOrder() {
-    const sortType: 'keyDescOrder' | 'valueAscOrder' | 'originalOrder' = this.order;
+    const sortType: 'keyDescOrder' | 'valueAscOrder' | 'originalOrder' | 'keyAscOrder' = this.order;
     return this[sortType];
   }
 
   sortTable() {
-    if (this.order == 'keyDescOrder') this.order = 'originalOrder';
+    if (this.order == 'originalOrder') this.order = 'keyAscOrder';
+    else if (this.order == 'keyAscOrder') this.order = 'valueAscOrder';
     else if (this.order == 'valueAscOrder') this.order = 'keyDescOrder';
-    else this.order = 'valueAscOrder';
+    else this.order = 'originalOrder';
   }
 }

@@ -13,7 +13,11 @@
   <tbody>
     <tr *ngFor="let item of wordObj | keyvalue: sortOrder">
       <td class="br-silver">{{item.key}}</td>
-      <td>{{item.value}}</td>
+      <td>
+        <div [innerHTML]="item.value"></div>
+      </td>
     </tr>
   </tbody>
 </table>
+
+<a href=""></a>
