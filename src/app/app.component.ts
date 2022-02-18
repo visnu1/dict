@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import * as csv from 'csvtojson'
+import { debounceTime, firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +10,7 @@ import * as csv from 'csvtojson'
 })
 export class AppComponent {
   title = 'dict';
-  order: 'keyDescOrder' | 'valueAscOrder' | 'originalOrder' | 'keyAscOrder' = 'originalOrder';
+  order: 'keyDescOrder' | 'valueAscOrder' | 'originalOrder' | 'keyAscOrder' | 'shuffle' = 'originalOrder';
   words = [
     "Abandon",
     "Abrasive",
@@ -438,9 +440,6 @@ export class AppComponent {
     "Penitent",
     "Perfunctory",
     "Peripheral",
-    "Pernicious",
-    "Perseverance",
-    "Persistence",
     "Personify",
     "Perspicacity",
     "Pessimism",
@@ -964,7 +963,7 @@ export class AppComponent {
     "a person without professional or specialized knowledge in a particular subject.",
     "to view or treat (someone) as a celebrity or extraordinary person.",
     "speaking or writing at too great a length, especially in a dull or tiresome way; verbose.",
-    "given to talking much or excessively; garrulous.",
+    "tending to talk a great deal; talkative.",
     "easy to understand; articulate; clear.",
     "producing monetary gain; profitable.",
     "to attract, as by a desirable quality.",
@@ -993,28 +992,28 @@ export class AppComponent {
     "in an unhealthy, gloomy mental state; preoccupied with sickness, abnormality, or death.",
     "to subject (someone) to extreme embarrassment, shame, or humiliation.",
     "grow larger or more numerous.",
-    "having several aspects or stages; complex or various.",
-    "of or pertaining to what is common and everyday; ordinary; commonplace.",
-    "not fully explained or understood, especially with concealed dishonesty or immorality.",
+    "having many sides; having many different aspects or features; complex or various.",
+    "lacking interest or excitement; dull; ordinary; commonplace.",
+    "<span>1. dark and gloomy, especially due to thick mist.</br><span>2. obscure or morally questionable.</span>",
     "(of a person or action) showing a lack of experience, wisdom, or judgment.",
     "excessive interest in or admiration of oneself and one's physical appearance.",
     "an account, description, or story, or the oral or written work containing such material.",
-    "coming into being or starting to develop.",
+    "(especially of a process or organization) just coming into existence and beginning to display signs of future potential.",
     "irritate or annoy (someone).",
-    "not showing excitement or anxiety; coolly confident, unflustered, or unworried;casually indifferent.",
+    "(of a person or manner) feeling or appearing casually calm and relaxed; not displaying anxiety, interest, or enthusiasm.",
     "establishing, relating to, or deriving from a standard or norm, especially of behavior.",
     "new or unusual in an interesting way.",
     "harmful, dangerous, or destructive, especially to health.",
     "stubbornly refusing to change one's opinion or course of action.",
     "to criticize sharply; rebuke vehemently; berate.",
-    "to bind legally or morally; constrain.",
-    "not important or well known.",
+    "to bind legal1. ly or morally; constrain.",
+    "<span>1.</span></br><span>2. not clearly expressed or easily understood.</span>",
     "obedient or attentive to an excessive or servile degree, fawning",
     "no longer produced or used; out of date.",
     "holding stubbornly to one's own ideas or purposes; unwilling to change.",
     "avoid; prevent.",
     "existing in all places at any given time.",
-    "infinite in knowledge; all-knowing.",
+    "knowing everything; all-knowing.",
     "the taking of opportunities as and when they arise, regardless of planning or principle.",
     "expecting or tending to expect favorable outcomes.",
     "having or displaying wealth or richness.",
@@ -1027,8 +1026,8 @@ export class AppComponent {
     "a confidently stylish, dashing, or flamboyant manner.",
     "favoring one side in a dispute above the other; biased.",
     "unfair bias in favor of one thing or person compared with another; favoritism.",
-    "devoted to or favoring a particular cause, group, political party, or the like.",
-    "just good enough to be acceptable; satisfactory.",
+    "a strong supporter of a party, cause, or person.",
+    "acceptable; satisfactory.",
     "of or relating to the country or country life; rural.",
     "easily recognizable; obvious.",
     "the state or fact of being odd or strange.",
@@ -1038,11 +1037,8 @@ export class AppComponent {
     "a strong or habitual liking for something or tendency to do something.",
     "be fully understood or realized by someone.",
     "feeling or showing sorrow and regret for having done wrong; repentant.",
-    "done quickly and as a matter of routine; performed without care.",
+    "(of an action) carried out without real interest, feeling, or effort.",
     "of secondary or minor importance; marginal.",
-    "having a very harmful or fatal effect; injurious, deadly, or destructive.",
-    "persistence in doing something despite difficulty or delay in achieving success.",
-    "firm or obstinate continuance in a course of action in spite of difficulty or opposition.",
     "to be a perfect or typical example of; embody.",
     "keenness of mental perception or grasp; astuteness.",
     "the belief that events will turn out badly; tendency to expect the worst.",
@@ -1560,7 +1556,7 @@ export class AppComponent {
     "Layperson": "a person without professional or specialized knowledge in a particular subject.",
     "Lionize": "to view or treat (someone) as a celebrity or extraordinary person.",
     "Long-Winded": "speaking or writing at too great a length, especially in a dull or tiresome way; verbose.",
-    "Loquacious": "given to talking much or excessively; garrulous.",
+    "Loquacious": "tending to talk a great deal; talkative.",
     "Lucid": "easy to understand; articulate; clear.",
     "Lucrative": "producing monetary gain; profitable.",
     "Lure": "to attract, as by a desirable quality.",
@@ -1583,34 +1579,34 @@ export class AppComponent {
     "Meticulous": "carefully attentive to every small detail; painstaking.",
     "Mimic": "to copy or imitate, often playfully or as part of a learning process.",
     "Misnomer": "an incorrect or inappropriate name.",
-    "Mitigate": "to lessen the force, severity, or impact of.",
+    "Mitigate": "make (something bad) less severe, serious, or painful.",
     "Modish": "being in or according to current fashion or style; fashionable.",
     "Monotony": "lack of variety and interest; tedious repetition and routine.",
     "Morbid": "in an unhealthy, gloomy mental state; preoccupied with sickness, abnormality, or death.",
     "Mortify": "to subject (someone) to extreme embarrassment, shame, or humiliation.",
     "Mounting": "grow larger or more numerous.",
-    "Multifaceted": "having several aspects or stages; complex or various.",
-    "Mundane": "of or pertaining to what is common and everyday; ordinary; commonplace.",
-    "Murky": "not fully explained or understood, especially with concealed dishonesty or immorality.",
+    "Multifaceted": "having many sides; having many different aspects or features; complex or various.",
+    "Mundane": "lacking interest or excitement; dull; ordinary; commonplace.",
+    "Murky": "<span>1. dark and gloomy, especially due to thick mist.</br><span>2. obscure or morally questionable.</span>",
     "Naive": "(of a person or action) showing a lack of experience, wisdom, or judgment.",
     "Narcissism": "excessive interest in or admiration of oneself and one's physical appearance.",
     "Narrative": "an account, description, or story, or the oral or written work containing such material.",
-    "Nascent": "coming into being or starting to develop.",
+    "Nascent": "(especially of a process or organization) just coming into existence and beginning to display signs of future potential.",
     "Nettles": "irritate or annoy (someone).",
-    "Nonchalant": "not showing excitement or anxiety; coolly confident, unflustered, or unworried;casually indifferent.",
+    "Nonchalant": "(of a person or manner) feeling or appearing casually calm and relaxed; not displaying anxiety, interest, or enthusiasm.",
     "Normative": "establishing, relating to, or deriving from a standard or norm, especially of behavior.",
     "Novel": "new or unusual in an interesting way.",
     "Noxious": "harmful, dangerous, or destructive, especially to health.",
     "Obdurate": "stubbornly refusing to change one's opinion or course of action.",
     "Objurgate": "to criticize sharply; rebuke vehemently; berate.",
     "Obligate": "to bind legally or morally; constrain.",
-    "Obscure": "not important or well known.",
+    "Obscure": "<span>1. not discovered or known about; uncertain.</span></br><span>2. not clearly expressed or easily understood.</span>",
     "Obsequious": "obedient or attentive to an excessive or servile degree, fawning",
     "Obsolete": "no longer produced or used; out of date.",
     "Obstinate": "holding stubbornly to one's own ideas or purposes; unwilling to change.",
     "Obviate": "avoid; prevent.",
     "Omnipresent": "existing in all places at any given time.",
-    "Omniscient": "infinite in knowledge; all-knowing.",
+    "Omniscient": "knowing everything; all-knowing.",
     "Opportunism": "the taking of opportunities as and when they arise, regardless of planning or principle.",
     "Optimistic": "expecting or tending to expect favorable outcomes.",
     "Opulent": "having or displaying wealth or richness.",
@@ -1623,8 +1619,8 @@ export class AppComponent {
     "Panache": "a confidently stylish, dashing, or flamboyant manner.",
     "Partial": "favoring one side in a dispute above the other; biased.",
     "Partiality": "unfair bias in favor of one thing or person compared with another; favoritism.",
-    "Partisan": "devoted to or favoring a particular cause, group, political party, or the like.",
-    "Passable": "just good enough to be acceptable; satisfactory.",
+    "Partisan": "a strong supporter of a party, cause, or person.",
+    "Passable": "acceptable; satisfactory.",
     "Pastoral": "of or relating to the country or country life; rural.",
     "Patent": "easily recognizable; obvious.",
     "Peculiarity": "the state or fact of being odd or strange.",
@@ -1634,11 +1630,8 @@ export class AppComponent {
     "Penchant": "a strong or habitual liking for something or tendency to do something.",
     "Penetrate": "be fully understood or realized by someone.",
     "Penitent": "feeling or showing sorrow and regret for having done wrong; repentant.",
-    "Perfunctory": "done quickly and as a matter of routine; performed without care.",
+    "Perfunctory": "(of an action) carried out without real interest, feeling, or effort.",
     "Peripheral": "of secondary or minor importance; marginal.",
-    "Pernicious": "having a very harmful or fatal effect; injurious, deadly, or destructive.",
-    "Perseverance": "persistence in doing something despite difficulty or delay in achieving success.",
-    "Persistence": "firm or obstinate continuance in a course of action in spite of difficulty or opposition.",
     "Personify": "to be a perfect or typical example of; embody.",
     "Perspicacity": "keenness of mental perception or grasp; astuteness.",
     "Pessimism": "the belief that events will turn out badly; tendency to expect the worst.",
@@ -1810,11 +1803,24 @@ export class AppComponent {
     "Zealot": "a person who is fanatical and uncompromising in pursuit of their religious, political, or other ideals."
   }
 
-  url = `https://docs.google.com/spreadsheets/d/e/2PACX-1vS6gxiJgtR02vrPodQZQmyMoW9E3Aa8O2qxSJKOU5qpfZW3HhoXh1wFhd3M3rj-Cd3fcoLrFHE-SmkB/pub?output=csv`;
-  constructor() { }
+  page = 0;
+  url:string;
+  excelWords = {};
+
+  constructor(private route: ActivatedRoute) {
+  }
 
   ngOnInit(): void {
-    this.otherData();
+    this.init();
+  }
+
+  init() {
+    const pages = { 1: '831803340' };
+    this.route.queryParams.pipe(debounceTime(100)).subscribe((params: any) => {
+      if (params.page) this.page = pages[+params.page] || +params.page;
+      this.url = `https://docs.google.com/spreadsheets/d/e/2PACX-1vS6gxiJgtR02vrPodQZQmyMoW9E3Aa8O2qxSJKOU5qpfZW3HhoXh1wFhd3M3rj-Cd3fcoLrFHE-SmkB/pub?gid=${this.page}&single=true&output=csv`;
+      this.otherData();
+    });
   }
 
   async otherData() {
@@ -1827,9 +1833,12 @@ export class AppComponent {
       if (res.status === 200) {
         const sheetData: string = await res.text();
         const jsonArray = await csv().fromString(sheetData);
+        this.excelWords = {};
         jsonArray.forEach(obj => {
-          this.wordObj[obj['word']] = obj['meaning'];
+          this.excelWords[obj['word']] = obj['meaning'];
         });
+        if (this.page === 0)
+          this.wordObj = { ...this.wordObj, ...this.excelWords };
       } else {
         console.log(`Error code ${res.status}`);
       }
@@ -1858,9 +1867,18 @@ export class AppComponent {
     return a.key > b.key ? -1 : (b.key > a.key ? 1 : 0);
   }
 
+  shuffle() {
+    const possibility = Math.floor(Math.random() * 2);
+    return Math.floor(Math.random() * 2) ? possibility : -1;
+  }
+
   get sortOrder() {
-    const sortType: 'keyDescOrder' | 'valueAscOrder' | 'originalOrder' | 'keyAscOrder' = this.order;
+    const sortType: 'keyDescOrder' | 'valueAscOrder' | 'originalOrder' | 'keyAscOrder' | 'shuffle' = this.order;
     return this[sortType];
+  }
+
+  onShuffle() {
+    this.order = 'shuffle';
   }
 
   sortTable() {
