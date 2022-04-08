@@ -1804,8 +1804,9 @@ export class AppComponent {
   }
 
   page = 0;
-  url:string;
+  url: string;
   excelWords = {};
+  synonyms = {};
 
   constructor(private route: ActivatedRoute) {
   }
@@ -1835,8 +1836,19 @@ export class AppComponent {
         const jsonArray = await csv().fromString(sheetData);
         this.excelWords = {};
         jsonArray.forEach(obj => {
-          this.excelWords[obj['word']] = obj['meaning'];
+          let word: string = obj['word'] || "";
+          word = word.trim().toLowerCase();
+          this.excelWords[word] = obj['meaning'];
+          if (obj['synonyms']) {
+            const synonyms: string[] = [];
+            (<string>obj['synonyms']).split(',').forEach(word => {
+              word = word.trim();
+              if (word) synonyms.push(word);
+            });
+            this.synonyms[word] = synonyms;
+          }
         });
+        console.log(this.synonyms);
         if (this.page === 0)
           this.wordObj = { ...this.wordObj, ...this.excelWords };
       } else {
@@ -1859,12 +1871,16 @@ export class AppComponent {
   }
 
   keyAscOrder = (a: any, b: any): number => {
-    return a.key < b.key ? -1 : (b.key > a.key ? 1 : 0);
+    const aKey = a.key.toLowerCase();
+    const bKey = b.key.toLowerCase();
+    return aKey < bKey ? -1 : (bKey > aKey ? 1 : 0);
   }
 
   // Order by descending property key
   keyDescOrder = (a: any, b: any): number => {
-    return a.key > b.key ? -1 : (b.key > a.key ? 1 : 0);
+    const aKey = a.key.toLowerCase();
+    const bKey = b.key.toLowerCase();
+    return aKey > b.key ? -1 : (b.key > aKey ? 1 : 0);
   }
 
   shuffle() {

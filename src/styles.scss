@@ -39,6 +39,13 @@ td {
   padding: 0;
 }
 
+.f-patrick {
+  font-family: "Patrick Hand", Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 18px;
+  line-height: 1.3em;
+  letter-spacing: 0.055em;
+}
+
 .btn {
   font-weight: 500;
 }
@@ -61,4 +68,39 @@ button:focus {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.exp{
+  font-family: "Patrick Hand", Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 16px;
+  line-height: 1.3em;
+  letter-spacing: 0.055em;
+  color: #616161;
+}
+
+.chip {
+  word-wrap: break-word;
+  list-style: none;
+  font-family: arial, sans-serif;
+  font-weight: 400;
+  display: inline-block;
+  color: #3c4043;
+  max-width: 250px;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  position: relative;
+  border-radius: 32px;
+  white-space: nowrap;
+  cursor: pointer;
+  background-color: #fff;
+  border: 1px solid #dadce0;
+  padding: 0 12px;
+  margin-right: 6px;
+  margin-top: 4px;
+  margin-bottom: 2px;
+  height: 22px;
+  line-height: 22px;
+  font-size: 13px;
+  outline: 0;
 }

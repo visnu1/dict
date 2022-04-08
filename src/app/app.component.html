@@ -17,7 +17,16 @@
         <tr *ngFor="let item of wordObj | keyvalue: sortOrder">
           <td class="br-silver">{{item.key | titlecase}}</td>
           <td>
-            <div [innerHTML]="item.value"></div>
+            <div [innerHTML]="item.value | sanitizeHtml"></div>
+            <div id="synonyms" *ngIf="synonyms[(item.key).toLowerCase()]">
+              <ul class="d-flex flex-wrap m-0" style="list-style: none;">
+                <li class="d-flex" *ngFor="let synonym of synonyms[(item.key).toLowerCase()]">
+                  <div class="chip">
+                    <span>{{synonym}}</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </td>
         </tr>
       </tbody>
