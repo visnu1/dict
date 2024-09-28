@@ -6,6 +6,15 @@ $dark-pink: #f9c4d2;
 $pink-border: #b18597;
 $pink-shadow: #ffe3e2;
 
+.main {
+  display: flex;
+
+  h1 {
+    flex: 1;
+    text-align: center;
+  }
+}
+
 .br-silver {
   border-right: 1px solid silver;
 }
