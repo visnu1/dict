@@ -31,7 +31,7 @@ export class AppComponent {
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      this.http.get('/assets/data.json').subscribe(response => {
+      this.http.get('assets/data.json').subscribe(response => {
         if (!response) {
           alert('Something went wrong!');
           return;
